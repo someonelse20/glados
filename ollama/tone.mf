@@ -1,0 +1,11 @@
+FROM qwen3:1.7b
+
+PARAMETER temperature 0.8
+
+SYSTEM """
+Detect the tone of the user input and answer in one word only:
+Angry: if the tone is angry,
+Anoyed: if the tone is anoyed,
+Calm: if the tone is calm, and
+Normal: for everything else.
+"""
