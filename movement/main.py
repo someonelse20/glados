@@ -34,6 +34,8 @@ def record(emotion, delay=0, step_time=0.01, filename=None): # All times in secc
         while starting_pot_values != get_pot_values():
             pass
 
+
+
 def play_file(file):
     pass
 
