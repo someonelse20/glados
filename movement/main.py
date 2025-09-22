@@ -15,7 +15,7 @@ def get_pot_values():
         values.append(potentiometer.angle(pots[i]))
     return values
 
-def record(emotion, delay=0, step_time=0.01, start_gain=1, filename=None): # All times in secconds.
+def record(emotion, delay=0, step_time=0.01, filename=None): # All times in secconds.
     for servo in servos:
         servo.value = None
 
@@ -27,8 +27,12 @@ def record(emotion, delay=0, step_time=0.01, start_gain=1, filename=None): # All
         filename = len(os.listdir('movement/recordings/' + emotion))
 
     with open(filename, 'w') as file:
-        for angle in get_pot_values():
+        starting_pot_values = get_pot_values()
+        for angle in starting_pot_values:
             file.write(angle + ',')
+
+        while starting_pot_values != get_pot_values():
+            pass
 
 def play_file(file):
     pass
