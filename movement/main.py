@@ -2,10 +2,10 @@ from gpiozero import Servo
 import random as r
 import threading
 import time
+import sys
 import os
 
 from drivers import potentiometer
-import tracking
 
 servos = [Servo(0), Servo(0), Servo(0), Servo(0)] # Ignoring the baseplate, 0 is shoulder, 1 is elbow, 2 is neck up down, and 3 is neck side to side.
 pots = [0, 0, 0, 0] # Potentiometers corosponding to the servos above, in the same order.
