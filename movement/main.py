@@ -1,5 +1,6 @@
 from gpiozero import Servo
 import random as r
+import threading
 import time
 import os
 
@@ -19,22 +20,36 @@ def record(emotion, delay=0, step_time=0.01, filename=None): # All times in secc
     for servo in servos:
         servo.value = None
 
-    print('Starting recording in ' + str(delay) + ' Seconds!')
+    if filename == None:
+        filename = str(len(os.listdir('movement/recordings/' + emotion)))
+
+    print('Starting record of ' + emotion + '/' + filename + ' in ' + str(delay) + ' Seconds!')
     time.sleep(delay)
     print('Starting recording as soon as I move!')
 
-    if filename == None:
-        filename = len(os.listdir('movement/recordings/' + emotion))
-
     with open(filename, 'w') as file:
-        starting_pot_values = get_pot_values()
-        for angle in starting_pot_values:
+        pot_values = get_pot_values()
+        for angle in pot_values:
             file.write(angle + ',')
 
-        while starting_pot_values != get_pot_values():
+        while pot_values == get_pot_values():
             pass
 
+        def record_tick(pot_values):
+            for angle in pot_values:
+                file.write(angle + ',')
+            time.sleep(step_time)
+            pot_values = get_pot_values()
 
+        recording = threading.Thread(target=record_tick, args=pot_values)
+
+        recording.start()
+
+        input('Starting recording! Press enter to quit.')
+
+        recording.join()
+
+        print('Recording saved as ' + emotion + '/' + filename + '.')
 
 def play_file(file):
     pass
