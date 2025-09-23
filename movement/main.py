@@ -2,7 +2,6 @@ from gpiozero import Servo
 import random as r
 import threading
 import time
-import sys
 import os
 
 from drivers import potentiometer
