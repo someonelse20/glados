@@ -16,7 +16,7 @@ def get_pot_values():
         values.append(potentiometer.angle(pots[i]))
     return values
 
-def record(emotion, delay=0, step_time=0.01, filename=None): # All times in secconds.
+def record(emotion, delay=0, step_time=0.1, filename=None): # All times in secconds.
     for servo in servos:
         servo.value = None
 
@@ -31,6 +31,7 @@ def record(emotion, delay=0, step_time=0.01, filename=None): # All times in secc
         pot_values = get_pot_values()
         for angle in pot_values:
             file.write(angle + ',')
+        file.write('\n')
 
         while pot_values == get_pot_values():
             pass
@@ -51,12 +52,17 @@ def record(emotion, delay=0, step_time=0.01, filename=None): # All times in secc
 
         print('Recording saved as ' + emotion + '/' + filename + '.')
 
-def play_file(file):
-    pass
+def play_file(file, step_time=0.1):
+    with open(file, 'r') as file:
+        for line in file:
+            positions = line.split(',')
+            for i in range(4):
+                servos[i].value = positions[i]
+            time.sleep(step_time)
 
-def play_emotion(emotion):
+def play_emotion(emotion, step_time=0.1):
     try:
-        play_file(r.choice(os.listdir('movement/recordings/' + emotion)))
+        play_file(r.choice(os.listdir('movement/recordings/' + emotion)), step_time)
         return True
     except:
         print("Warning: incorect emotion.")
