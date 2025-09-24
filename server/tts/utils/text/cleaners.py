@@ -72,7 +72,7 @@ class Cleaner:
         self.use_phonemes = use_phonemes
         self.lang = lang
         if use_phonemes:
-            self.phonemize = Phonemizer.from_checkpoint('tts/models/en_us_cmudict_ipa_forward.pt')
+            self.phonemize = Phonemizer.from_checkpoint('models/en_us_cmudict_ipa_forward.pt')
 
     def __call__(self, text: str) -> str:
         text = self.clean_func(text)

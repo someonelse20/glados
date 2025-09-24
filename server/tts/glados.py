@@ -26,9 +26,9 @@ class tts_runner:
     def __init__(self, use_p1: bool=False, log: bool=False):
         self.log = log
         if use_p1:
-            self.emb = torch.load('tts/models/emb/glados_p1.pt')
+            self.emb = torch.load('models/emb/glados_p1.pt')
         else:
-            self.emb = torch.load('tts/models/emb/glados_p2.pt')
+            self.emb = torch.load('models/emb/glados_p2.pt')
         # Select the device
         if torch.cuda.is_available():
             self.device = 'cuda'
@@ -38,8 +38,8 @@ class tts_runner:
             self.device = 'cpu'
 
         # Load models
-        self.glados = torch.jit.load('tts/models/glados-new.pt')
-        self.vocoder = torch.jit.load('tts/models/vocoder-gpu.pt', map_location=self.device)
+        self.glados = torch.jit.load('models/glados-new.pt')
+        self.vocoder = torch.jit.load('models/vocoder-gpu.pt', map_location=self.device)
         for i in range(2):
             init = self.glados.generate_jit(prepare_text(str(i)), self.emb, 1.0)
             init_mel = init['mel_post'].to(self.device)
@@ -93,7 +93,7 @@ class tts_runner:
         audio = self.run_tts(sentences[0])
         pause = AudioSegment.silent(duration=delay)
         old_line = AudioSegment.silent(duration=1.0) + audio
-        self.speak_one_line(old_line, "tts/old_line.wav")
+        self.speak_one_line(old_line, "old_line.wav")
         old_time = time.time()
         old_dur = old_line.duration_seconds
         new_dur = old_dur
@@ -113,15 +113,15 @@ class tts_runner:
                 else:
                     time.sleep(time_left + delay)
                 if idx % 2 == 1:
-                    self.speak_one_line(new_line, "tts/new_line.wav")
+                    self.speak_one_line(new_line, "new_line.wav")
                 else:
-                    self.speak_one_line(old_line, "tts/old_line.wav")
+                    self.speak_one_line(old_line, "old_line.wav")
                 old_time = time.time()
                 old_dur = new_dur
         else:
             time.sleep(old_dur + 0.1)
 
-        audio.export("tts/output.wav", format = "wav")
+        audio.export("output.wav", format = "wav")
         time_left = old_dur - time.time() + old_time
         if time_left >= 0:
             time.sleep(time_left + delay)
